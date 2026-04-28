@@ -4,10 +4,11 @@ import Sidebar from "./Sidebar";
 import Navbar from "./Navbar";
 
 function EmergencySOS() {
+  const user = JSON.parse(localStorage.getItem("user")) || {};
   const [requests, setRequests] = useState([]);
   const [form, setForm] = useState({
-    customerName: "",
-    phone: "",
+    customerName: user.name || "",
+    phone: user.phone || "",
     vehicleRegNumber: "",
     issue: "",
     address: "",
@@ -38,7 +39,15 @@ function EmergencySOS() {
         lng: Number(form.lng || 0)
       }
     });
-    setForm({ customerName: "", phone: "", vehicleRegNumber: "", issue: "", address: "", lat: "", lng: "" });
+    setForm({
+      customerName: user.name || "",
+      phone: user.phone || "",
+      vehicleRegNumber: "",
+      issue: "",
+      address: "",
+      lat: "",
+      lng: ""
+    });
     loadRequests();
   };
 

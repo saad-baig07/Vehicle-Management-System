@@ -28,7 +28,7 @@ function Register() {
     <div className="auth-page">
       <div className="auth-card">
         <h2>Create AutoCare Account</h2>
-        <p>Choose the correct role to get the right dashboard.</p>
+        <p>Choose whether you are a customer or mechanic.</p>
 
         <form onSubmit={register}>
           <label>Name<input value={data.name} onChange={(e) => setData({ ...data, name: e.target.value })} required /></label>
@@ -40,7 +40,6 @@ function Register() {
             <select value={data.role} onChange={(e) => setData({ ...data, role: e.target.value })}>
               <option>Customer</option>
               <option>Mechanic</option>
-              <option>Admin</option>
             </select>
           </label>
           <button className="primary-action" type="submit">Register</button>

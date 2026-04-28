@@ -11,8 +11,7 @@ const emptyQuoteItem = { name: "", quantity: 1, price: 0 };
 
 function ServiceTracker() {
   const user = JSON.parse(localStorage.getItem("user")) || {};
-  const role = user.role || "Customer";
-  const isAdmin = role === "Admin";
+  const role = ["Customer", "Mechanic"].includes(user.role) ? user.role : "Customer";
   const isMechanic = role === "Mechanic";
   const isCustomer = role === "Customer";
   const [services, setServices] = useState([]);
@@ -139,7 +138,10 @@ function ServiceTracker() {
       return;
     }
 
-    await axios.patch(`${API}/services/${service._id}/approval`, { approved });
+    await axios.patch(`${API}/services/${service._id}/approval`, {
+      approved,
+      customerEmail: user.email
+    });
     setMessage(approved ? "Quote approved. Repair can begin." : "Quote rejected by customer.");
     loadData();
   };
@@ -154,7 +156,6 @@ function ServiceTracker() {
           <p>
             {isCustomer && "Track your booking and approve or reject itemized quotes before repair begins."}
             {isMechanic && "Update assigned jobs with inspection notes, quotes, location, parts, invoices, and status."}
-            {isAdmin && "Assign mechanics, send itemized estimates, approve work, and update live repair status."}
           </p>
         </section>
 
@@ -223,33 +224,6 @@ function ServiceTracker() {
                 </div>
 
                 <section className="tracker-grid">
-                  {isAdmin && (
-                  <div className="tracker-panel">
-                    <h5>Dispatch</h5>
-                    <div className="inline-controls">
-                      <select
-                        value={draft.mechanicId || ""}
-                        onChange={(e) =>
-                          setStatusDrafts({
-                            ...statusDrafts,
-                            [service._id]: { ...draft, mechanicId: e.target.value }
-                          })
-                        }
-                      >
-                        <option value="">Smart select available mechanic</option>
-                        {mechanics.map((mechanic) => (
-                          <option key={mechanic._id} value={mechanic._id}>
-                            {mechanic.name} - {mechanic.status} - {mechanic.skills?.join(", ") || "General"}
-                          </option>
-                        ))}
-                      </select>
-                      <button type="button" onClick={() => assignMechanic(service._id, draft.mechanicId)}>
-                        Assign
-                      </button>
-                    </div>
-                  </div>
-                  )}
-
                   {isMechanic && !service.mechanicId && (
                     <div className="tracker-panel">
                       <h5>Accept Job</h5>
@@ -261,11 +235,11 @@ function ServiceTracker() {
                       >
                         Accept This Job
                       </button>
-                      {!loggedMechanic && <small>Your mechanic profile is missing. Register as Mechanic again or ask admin to add your mechanic email.</small>}
+                      {!loggedMechanic && <small>Your mechanic profile is missing. Register as Mechanic with this same email.</small>}
                     </div>
                   )}
 
-                  {(isAdmin || isMechanic) && (
+                  {isMechanic && (
                   <div className="tracker-panel">
                     <h5>Quote Items</h5>
                     {quoteItems.map((item, index) => (
@@ -296,14 +270,6 @@ function ServiceTracker() {
                       </button>
                       <button type="button" onClick={() => sendQuote(service)}>
                         Send Quote
-                      </button>
-                    </div>
-                    <div className="inline-controls">
-                      <button type="button" onClick={() => approveQuote(service, true)}>
-                        Mark Customer Approved
-                      </button>
-                      <button type="button" className="btn-danger" onClick={() => approveQuote(service, false)}>
-                        Reject Quote
                       </button>
                     </div>
                   </div>
@@ -337,7 +303,7 @@ function ServiceTracker() {
                     </div>
                   )}
 
-                  {(isAdmin || isMechanic) && (
+                  {isMechanic && (
                   <div className="tracker-panel">
                     <h5>Status & Invoice</h5>
                     <div className="form-grid compact-form">

@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 function AddVehicle() {
   const user = JSON.parse(localStorage.getItem("user")) || {};
+  const isCustomer = user.role !== "Mechanic";
   const [data, setData] = useState({
     ownerName: user.name || "",
     ownerPhone: user.phone || "",
@@ -44,7 +45,7 @@ function AddVehicle() {
           <form className="form-grid" onSubmit={handleSubmit}>
             <label>
               Owner Name
-              <input value={data.ownerName} onChange={(e) => update("ownerName", e.target.value)} required readOnly={user.role === "Customer"} />
+              <input value={data.ownerName} onChange={(e) => update("ownerName", e.target.value)} required readOnly={isCustomer} />
             </label>
             <label>
               Phone
@@ -52,7 +53,7 @@ function AddVehicle() {
             </label>
             <label>
               Email
-              <input type="email" value={data.ownerEmail} onChange={(e) => update("ownerEmail", e.target.value)} readOnly={user.role === "Customer"} />
+              <input type="email" value={data.ownerEmail} onChange={(e) => update("ownerEmail", e.target.value)} readOnly={isCustomer} />
             </label>
             <label>
               Registration Number

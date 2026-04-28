@@ -2,10 +2,11 @@ import { Link } from "react-router-dom";
 
 function Sidebar() {
   const user = JSON.parse(localStorage.getItem("user")) || {};
-  const role = user.role || "Customer";
+  const role = ["Customer", "Mechanic"].includes(user.role) ? user.role : "Customer";
 
   const linksByRole = {
     Customer: [
+      ["/customer", "Customer Home"],
       ["/service", "Book Service"],
       ["/tracking", "My Tracking"],
       ["/vehicles", "My Vehicle Health"],
@@ -15,16 +16,6 @@ function Sidebar() {
     Mechanic: [
       ["/mechanic/jobs", "Assigned Jobs"],
       ["/tracking", "Quote & Status Updates"]
-    ],
-    Admin: [
-      ["/dashboard", "Command Center"],
-      ["/vehicles", "Vehicle Health"],
-      ["/add-vehicle", "Add Vehicle"],
-      ["/service", "Book Service"],
-      ["/tracking", "Tracking & Quotes"],
-      ["/mechanics", "Mechanics"],
-      ["/sos", "Emergency SOS"],
-      ["/users", "Users"]
     ]
   };
 

@@ -4,8 +4,7 @@ import { useNavigate, Link } from "react-router-dom";
 
 const homeForRole = (role) => {
   if (role === "Mechanic") return "/mechanic/jobs";
-  if (role === "Customer") return "/service";
-  return "/dashboard";
+  return "/customer";
 };
 
 function Login() {

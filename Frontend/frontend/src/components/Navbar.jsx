@@ -15,7 +15,7 @@ const Navbar = () => {
       </div>
 
       <div className="topbar-actions">
-        <span>{user?.name || "Admin"}</span>
+        <span>{user?.name || "User"}</span>
         <button type="button" className="btn-muted" onClick={toggleTheme}>
           Theme
         </button>

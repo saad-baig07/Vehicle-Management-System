@@ -6,12 +6,13 @@ import { Link } from "react-router-dom";
 
 function Vehicles() {
   const user = JSON.parse(localStorage.getItem("user")) || {};
+  const isCustomer = user.role !== "Mechanic";
   const [vehicles, setVehicles] = useState([]);
   const [services, setServices] = useState([]);
 
   useEffect(() => {
-    const params = user.role === "Customer" ? { ownerEmail: user.email } : {};
-    const serviceParams = user.role === "Customer" ? { customerEmail: user.email } : {};
+    const params = isCustomer ? { ownerEmail: user.email } : {};
+    const serviceParams = isCustomer ? { customerEmail: user.email } : {};
     axios.get("http://localhost:5000/api/vehicles", { params }).then((res) => setVehicles(res.data));
     axios.get("http://localhost:5000/api/services", { params: serviceParams }).then((res) => setServices(res.data));
   }, []);

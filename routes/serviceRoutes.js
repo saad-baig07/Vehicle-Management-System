@@ -151,6 +151,9 @@ router.patch("/:id/approval", async (req, res) => {
   try {
     const service = await Service.findById(req.params.id);
     if (!service) return res.status(404).json({ msg: "Service booking not found" });
+    if (!req.body.customerEmail || req.body.customerEmail !== service.customerEmail) {
+      return res.status(403).json({ msg: "Only the booking customer can approve or reject this quote" });
+    }
 
     const approved = Boolean(req.body.approved);
     service.quoteStatus = approved ? "Approved" : "Rejected";

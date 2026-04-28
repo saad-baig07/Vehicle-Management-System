@@ -13,7 +13,6 @@ app.use(express.json());
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/vehicles", require("./routes/vehicleRoutes"));
 app.use("/api/rentals", require("./routes/rentalRoutes"));
-app.use("/api/dashboard", require("./routes/dashboardRoutes"));
 app.use("/api/services", require("./routes/serviceRoutes"));
 app.use("/api/mechanics", require("./routes/mechanicRoutes"));
 app.use("/api/sos", require("./routes/sosRoutes"));

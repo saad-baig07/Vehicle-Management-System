@@ -8,6 +8,7 @@ const serviceTypes = ["General Service", "Engine Issue", "Oil Change", "Puncture
 
 function ServiceForm() {
   const user = JSON.parse(localStorage.getItem("user")) || {};
+  const isCustomer = user.role !== "Mechanic";
   const [vehicles, setVehicles] = useState([]);
   const [data, setData] = useState({
     vehicleId: "",
@@ -24,7 +25,7 @@ function ServiceForm() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const params = user.role === "Customer" ? { ownerEmail: user.email } : {};
+    const params = isCustomer ? { ownerEmail: user.email } : {};
     axios.get("http://localhost:5000/api/vehicles", { params }).then((res) => setVehicles(res.data));
   }, []);
 
@@ -33,7 +34,7 @@ function ServiceForm() {
   const addService = async (e) => {
     e.preventDefault();
     await axios.post("http://localhost:5000/api/services", data);
-    alert("Service booked. Admin can now assign a mechanic and send an itemized quote.");
+    alert("Service booked. A mechanic can now accept the job and send an itemized quote.");
     navigate("/tracking");
   };
 
@@ -47,6 +48,15 @@ function ServiceForm() {
             <h3>Anytime Service Booking</h3>
             <p>Schedule doorstep or workshop maintenance without phone calls or manual visits.</p>
           </div>
+
+          {vehicles.length === 0 && (
+            <div className="notice">
+              Add your vehicle first so this booking can be attached to a digital health record.
+              <button type="button" className="btn-muted inline-notice-action" onClick={() => navigate("/add-vehicle")}>
+                Add Vehicle
+              </button>
+            </div>
+          )}
 
           <form className="form-grid" onSubmit={addService}>
             <label>
@@ -62,7 +72,7 @@ function ServiceForm() {
             </label>
             <label>
               Customer Name
-              <input value={data.customerName} onChange={(e) => update("customerName", e.target.value)} required readOnly={user.role === "Customer"} />
+              <input value={data.customerName} onChange={(e) => update("customerName", e.target.value)} required readOnly={isCustomer} />
             </label>
             <label>
               Phone
@@ -70,7 +80,7 @@ function ServiceForm() {
             </label>
             <label>
               Email
-              <input type="email" value={data.customerEmail} onChange={(e) => update("customerEmail", e.target.value)} required readOnly={user.role === "Customer"} />
+              <input type="email" value={data.customerEmail} onChange={(e) => update("customerEmail", e.target.value)} required readOnly={isCustomer} />
             </label>
             <label>
               Service Type
